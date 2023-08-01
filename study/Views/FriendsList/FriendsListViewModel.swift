@@ -45,4 +45,7 @@ class FriendsListViewModel: ObservableObject {
         selectedUser = user
         isNavigate.toggle()
     }
+    func logout() {
+        AppState.shared.navigation = .login
+    }
 }

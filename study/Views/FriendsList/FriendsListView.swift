@@ -50,6 +50,14 @@ struct FriendsListView: View {
                     FriendDetailView(user: user)
                 }
             }
+            .navigationBarItems(trailing:
+                                    Button(action: {
+                viewModel.logout()
+            }, label: {
+                Image(systemName: "rectangle.portrait.and.arrow.forward")
+                    .foregroundColor(.white)
+            })
+            )
         }
     }
 }
