@@ -39,6 +39,7 @@ struct LoginView: View {
                         .focused($focusedField, equals: .password)
                         .submitLabel(.done)
                     Button {
+                        endEditing()
                         viewModel.login()
                     } label: {
                         Text("Login")
@@ -81,6 +82,9 @@ struct LoginView: View {
         }
         .alert("Unvalid username", isPresented: $viewModel.showingAlert) {
             Button("OK", role: .cancel) {}
+        }
+        .onTapGesture {
+            endEditing()
         }
     }
 }
