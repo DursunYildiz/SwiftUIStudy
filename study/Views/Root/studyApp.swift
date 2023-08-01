@@ -11,7 +11,8 @@ import SwiftUI
 struct studyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView()
+                .preferredColorScheme(.dark)
         }
     }
 }
