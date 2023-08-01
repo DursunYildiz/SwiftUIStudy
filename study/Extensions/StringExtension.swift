@@ -6,3 +6,8 @@
 //
 
 import Foundation
+extension String {
+    func toDouble() -> Double {
+        return Double(self) ?? 0.0
+    }
+}

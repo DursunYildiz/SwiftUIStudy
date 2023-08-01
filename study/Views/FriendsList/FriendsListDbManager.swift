@@ -1,5 +1,5 @@
 //
-//  FriendListDb.swift
+//  FriendsListDbManager.swift
 //  study
 //
 //  Created by Dursun YILDIZ on 31.07.2023.
@@ -7,8 +7,8 @@
 
 import Foundation
 import RealmSwift
-final class FriendListDbManager: FriendsListServiceProtocol {
-    static let shared: FriendListDbManager = .init()
+final class FriendsListDbManager: FriendsListServiceProtocol {
+    static let shared: FriendsListDbManager = .init()
     func fetchFriendsList(completion: @escaping (Result<[User], Error>) -> Void) {
         if let localRealm = localRealm {
             var friendsList: [User] = []
@@ -23,7 +23,7 @@ final class FriendListDbManager: FriendsListServiceProtocol {
 
     private(set) var localRealm: Realm?
 
-   private init() {
+    private init() {
         openRealm()
     }
 
@@ -52,15 +52,27 @@ final class FriendListDbManager: FriendsListServiceProtocol {
                         localRealm.add(newCourse)
                     }
 
-                    print("Added new course to Realm!")
+                    print("Added friendsList")
                 }
             } catch {
-                print("Error adding course to Realm", error)
+                print("Error adding friendsList to Realm", error)
             }
         }
     }
 }
 
 final class FriendsListDbModel: Object {
-    dynamic var friend: User?
+    @objc private dynamic var friendData: Data?
+
+    var friend: User? {
+        get {
+            if let data = friendData {
+                return try? JSONDecoder().decode(User.self, from: data)
+            }
+            return nil
+        }
+        set {
+            friendData = try? JSONEncoder().encode(newValue)
+        }
+    }
 }

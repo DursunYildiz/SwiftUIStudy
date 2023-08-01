@@ -8,51 +8,29 @@
 import SwiftUI
 
 struct ProfileCellView: View {
-    let name: String
-    let surname: String
-    let url: URL
+    private let name: String
+    private let surname: String
+    private let url: String
     init(name: String, surname: String, url: String) {
         self.name = name
         self.surname = surname
-        self.url = URL(string: url)!
+        self.url = url
     }
-    var body: some View {
-        HStack (spacing: 30){
 
-            AsyncImage(url: self.url) { phase in
-                switch phase {
-                case .empty:
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.gray)
-                case .success(let image):
-                    // Image loaded successfully
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        
-                case .failure:
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.red)
-                @unknown default:
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.gray)
-                }
-            }
-            .frame(width: 50, height: 50)
-            .clipShape(Circle())
+    var body: some View {
+        HStack(spacing: 30) {
+            NetworkImageView(url: url)
+                .frame(width: 50, height: 50)
+                .clipShape(Circle())
             VStack(alignment: .leading) {
                 Text(name)
                     .font(.callout.bold())
-                    
+                    .foregroundColor(.white)
+
                 Text(surname)
                     .font(.callout)
                     .opacity(0.7)
+                    .foregroundColor(.white)
             }
             Spacer()
         }
@@ -73,6 +51,7 @@ struct ProfileCellView: View {
 
 struct ProfileCellView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileCellView()
+        ProfileCellView(name: "Dummy", surname: "Dummy", url: "")
+            .preferredColorScheme(.dark)
     }
 }

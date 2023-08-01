@@ -9,7 +9,7 @@
 import SwiftUI
 struct LoginView: View {
     @ObservedObject private var viewModel: LoginViewModel
-    let bgColor: Color = .init(red: 6/255, green: 5/255, blue: 12/255)
+
     enum FocusedField {
         case username, password
     }
@@ -28,7 +28,7 @@ struct LoginView: View {
                     Text("Username")
                         .font(.callout.bold())
                     CostumTextField(placeHolder: "Username",
-                                    text: $viewModel.model.userName)
+                                    text: $viewModel.model.username)
                         .focused($focusedField, equals: .username)
                     Text("Password")
                         .font(.callout.bold())
@@ -38,11 +38,13 @@ struct LoginView: View {
                                     isSecureField: true)
                         .focused($focusedField, equals: .password)
                         .submitLabel(.done)
-                    Button {} label: {
+                    Button {
+                        viewModel.login()
+                    } label: {
                         Text("Login")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundColor(bgColor)
+                            .foregroundColor(.bgColor)
                             .padding(.vertical, 12)
                             .frame(maxWidth: .infinity)
                             .background(.white)
@@ -67,7 +69,7 @@ struct LoginView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             Rectangle()
-                .fill(bgColor)
+                .fill(Color.bgColor)
                 .ignoresSafeArea()
         )
         .onSubmit {
@@ -77,6 +79,9 @@ struct LoginView: View {
                 focusedField = nil
             }
         }
+        .alert("Unvalid username", isPresented: $viewModel.showingAlert) {
+            Button("OK", role: .cancel) {}
+        }
     }
 }
 
@@ -84,79 +89,5 @@ struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
             .preferredColorScheme(.dark)
-    }
-}
-
-struct CostumTextField: View {
-    private var placeHolder: String
-    var isSecureField: Bool = false
-    @Binding var text: String
-    init(placeHolder: String = "",
-         text: Binding<String>,
-         isSecureField: Bool = false)
-    {
-        self.placeHolder = placeHolder
-        _text = text
-        self.isSecureField = isSecureField
-    }
-
-    var body: some View {
-        Group {
-            if isSecureField {
-                SecureField(placeHolder, text: $text)
-            } else {
-                TextField(placeHolder, text: $text)
-            }
-        }
-
-        .padding(.vertical, 10)
-        .padding(.horizontal, 15)
-        .background(.white.opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-    }
-}
-
-struct BlurView: UIViewRepresentable {
-    func updateUIView(_: UIVisualEffectView, context _: Context) {}
-
-    var effect: UIBlurEffect.Style
-    func makeUIView(context _: Context) -> UIVisualEffectView {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: effect))
-        return view
-    }
-}
-
-struct TransparentBlurView: UIViewRepresentable {
-    var removeAllFilters: Bool = false
-    func makeUIView(context _: Context) -> TransparentBlurViewHelper {
-        TransparentBlurViewHelper(removeAllFilters: removeAllFilters)
-    }
-
-    func updateUIView(_: TransparentBlurViewHelper, context _: Context) {}
-}
-
-final class TransparentBlurViewHelper: UIVisualEffectView {
-    init(removeAllFilters: Bool) {
-        super.init(effect: UIBlurEffect(style: .systemUltraThinMaterial))
-        if subviews.indices.contains(1) {
-            subviews[1].alpha = 0
-        }
-        if let backdropLayer = layer.sublayers?.first {
-            if removeAllFilters {
-                backdropLayer.filters = []
-            } else {
-                /// Removing All Expect Blur Filter
-                backdropLayer.filters?.removeAll(where: { filter in
-                    String(describing: filter) != "gaussianBlur"
-                })
-            }
-        }
-    }
-
-    override func traitCollectionDidChange(_: UITraitCollection?) {}
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

@@ -1,5 +1,5 @@
 //
-//  
+//
 //  LoginViewModel.swift
 //  study
 //
@@ -9,10 +9,13 @@
 import Foundation
 
 final class LoginViewModel: ObservableObject {
-    @Published var model: LoginModel = .init(userName: "", password: "")
-   
+    @Published var model: LoginModel = .init(username: "", password: "")
+    @Published var showingAlert = false
     func login() {
-        
+        guard model.isValidUsername() else {
+            showingAlert.toggle()
+            return
+        }
+        AppState.shared.navigation = .friendsList
     }
-
 }

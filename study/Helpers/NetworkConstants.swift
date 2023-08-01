@@ -6,3 +6,6 @@
 //
 
 import Foundation
+struct NetworkConstants {
+    static let friendList: String = "https://randomuser.me/api/?results=20"
+}

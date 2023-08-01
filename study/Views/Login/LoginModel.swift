@@ -9,5 +9,11 @@
 import Foundation
 
 struct LoginModel: Codable {
-    var userName, password: String
+    var username, password: String
+
+    func isValidUsername() -> Bool {
+        let usernameRegex = #"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{5}$"#
+        let usernamePredicate = NSPredicate(format: "SELF MATCHES %@", usernameRegex)
+        return usernamePredicate.evaluate(with: username)
+    }
 }
